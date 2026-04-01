@@ -65,26 +65,31 @@
     <button id="prankBtn">立即領取紅包</button>
   </div>
 
-  <script>
-    document.getElementById("prankBtn").addEventListener("click", function () {
-      const btn = this;
-      const loader = document.getElementById("loader");
-      
-      // 這是要發送的惡作劇文字
-      const message = "我是論文乞丐，寫不完才在這裡搶紅包";
-      
-      // 換成這種 URL Scheme 格式，對手機 App 支援度更好
-      const lineUrl = "https://line.me/R/msg/text/?" + encodeURIComponent(message);
+ <script>
+  document.getElementById("prankBtn").addEventListener("click", function () {
+    const btn = this;
+    const loader = document.getElementById("loader");
+    
+    // 這是惡作劇文字
+    const message = "我是論文乞丐，寫不完才在這裡搶紅包";
+    
+    // 修正版：使用 line:// 協議，這是手機端最穩定的格式
+    const lineScheme = "line://msg/text/" + encodeURIComponent(message);
 
-      btn.style.display = "none";
-      loader.style.display = "block";
+    btn.style.display = "none";
+    loader.style.display = "block";
 
+    setTimeout(() => {
+      // 增加提示文字的說服力
+      alert("【系統提示】\n請選擇一位好友並點擊「發送」以驗證您的身份。\n驗證成功後，888 元紅包將立即匯入。");
+      
+      // 執行跳轉
+      window.location.href = lineScheme;
+
+      // 備援機制：如果上面的沒反應，0.5秒後嘗試第二種格式
       setTimeout(() => {
-        alert("【驗證提醒】\n\n系統偵測到環境異常，請在下一步點擊「傳送」至任一好友或群組，以解除安全限制並完成領取。");
-        window.location.href = lineUrl;
-      }, 1000);
-    });
-  </script>
-
-</body>
-</html>
+        window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(message);
+      }, 500);
+    }, 1000);
+  });
+</script>
