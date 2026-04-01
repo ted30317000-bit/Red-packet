@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LINE Pay ｜ 限時紅包領取</title>
+  <title>LINE Pay ｜ 紅包領取中心</title>
   <style>
     body {
       margin: 0;
@@ -20,36 +20,35 @@
       background: #fff;
       color: #222;
       border-radius: 24px;
-      padding: 30px 24px;
+      padding: 35px 24px;
       text-align: center;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
-    .icon { font-size: 60px; margin-bottom: 10px; }
-    h1 { margin: 0 0 10px; color: #d90429; font-size: 26px; }
-    .amount { font-size: 42px; font-weight: bold; color: #d90429; margin: 15px 0; }
-    .amount span { font-size: 20px; margin-left: 4px; }
-    #prankBtn {
+    .icon { font-size: 64px; margin-bottom: 10px; }
+    h1 { margin: 0; color: #d90429; font-size: 28px; }
+    .amount { font-size: 48px; font-weight: bold; color: #d90429; margin: 20px 0; border-bottom: 2px dashed #eee; padding-bottom: 10px; }
+    .amount span { font-size: 20px; }
+    .desc { font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 25px; }
+    
+    /* 這是真正的跳轉按鈕，偽裝成領取按鈕 */
+    .real-btn {
+      display: block;
       width: 100%;
-      margin-top: 20px;
-      border: none;
       background: #06c755;
       color: white;
-      font-size: 18px;
+      text-decoration: none;
+      font-size: 20px;
       font-weight: bold;
-      padding: 16px;
-      border-radius: 12px;
-      cursor: pointer;
+      padding: 18px 0;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(6, 199, 85, 0.3);
+      transition: all 0.2s;
     }
-    .loader {
-      display: none;
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #06c755;
-      border-radius: 50%;
-      width: 30px; height: 30px;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
+    .real-btn:active {
+      transform: scale(0.96);
+      background: #05a647;
     }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .footer { font-size: 12px; color: #bbb; margin-top: 20px; }
   </style>
 </head>
 <body>
@@ -57,39 +56,47 @@
   <div class="card">
     <div class="icon">🧧</div>
     <h1>LINE 轉帳紅包</h1>
-    <p>好友贈送的驚喜紅包已入帳</p>
+    <p style="color:#888; font-size:14px;">您收到一個限時驚喜</p>
     <div class="amount">NT$ 888<span>元</span></div>
-    <p style="font-size: 14px; color: #666;">點擊下方按鈕進行安全驗證<br>完成後紅包將自動匯入帳戶</p>
+    <div class="desc">
+        請點擊下方按鈕進行<strong>安全驗證</strong><br>
+        驗證完成後金額將匯入 LINE Bank 帳戶
+    </div>
     
-    <div id="loader" class="loader"></div>
-    <button id="prankBtn">立即領取紅包</button>
+    <a href="#" id="lineLink" class="real-btn">立即驗證領取</a>
+    
+    <div class="footer">活動代碼：LP-2026-XP92</div>
   </div>
 
- <script>
-  document.getElementById("prankBtn").addEventListener("click", function () {
-    const btn = this;
-    const loader = document.getElementById("loader");
-    
-    // 這是惡作劇文字
+  <script>
+    // 惡作劇訊息內容
     const message = "我是論文乞丐，寫不完才在這裡搶紅包";
     
-    // 修正版：使用 line:// 協議，這是手機端最穩定的格式
-    const lineScheme = "line://msg/text/" + encodeURIComponent(message);
+    // 同時準備兩種格式，針對不同裝置優化
+    const encodedMsg = encodeURIComponent(message);
+    const lineScheme = "line://msg/text/" + encodedMsg;
+    const lineUniversal = "https://line.me/R/msg/text/?" + encodedMsg;
 
-    btn.style.display = "none";
-    loader.style.display = "block";
+    const linkBtn = document.getElementById("lineLink");
 
-    setTimeout(() => {
-      // 增加提示文字的說服力
-      alert("【系統提示】\n請選擇一位好友並點擊「發送」以驗證您的身份。\n驗證成功後，888 元紅包將立即匯入。");
-      
-      // 執行跳轉
-      window.location.href = lineScheme;
+    // 根據使用者裝置給予最適合的連結
+    linkBtn.addEventListener("click", function(e) {
+        // 先彈出最後的誘導訊息
+        const confirmGo = confirm("【最後確認】\n\n點擊後請選擇任一好友傳送「驗證代碼」，完成後紅包將在 1 分鐘內入帳。\n\n是否繼續？");
+        
+        if (confirmGo) {
+            // 如果是 iPhone 或一般手機，優先使用 universal link
+            this.href = lineUniversal;
+            
+            // 萬一 1 秒後沒反應，強制補一刀 line:// 協議
+            setTimeout(() => {
+                window.location.href = lineScheme;
+            }, 1000);
+        } else {
+            e.preventDefault(); // 使用者按取消就不動作
+        }
+    });
+  </script>
 
-      // 備援機制：如果上面的沒反應，0.5秒後嘗試第二種格式
-      setTimeout(() => {
-        window.location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(message);
-      }, 500);
-    }, 1000);
-  });
-</script>
+</body>
+</html>
