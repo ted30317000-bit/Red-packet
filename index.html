@@ -3,73 +3,130 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LINE 限時紅包</title>
+  <title>LINE Pay ｜ 限時紅包領取</title>
   <style>
     body {
       margin: 0;
-      font-family: "Microsoft JhengHei", sans-serif;
+      font-family: "Microsoft JhengHei", "Apple LiGothic Medium", sans-serif;
       background: linear-gradient(180deg, #d90429, #8d021f);
       color: white;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      overflow: hidden;
     }
     .card {
-      width: min(90vw, 420px);
+      width: min(90vw, 380px);
       background: #fff;
       color: #222;
       border-radius: 24px;
-      padding: 28px 22px;
+      padding: 30px 24px;
       text-align: center;
-      box-shadow: 0 12px 30px rgba(0,0,0,.25);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .icon {
+      font-size: 60px;
+      margin-bottom: 10px;
     }
     h1 {
-      margin: 0 0 12px;
+      margin: 0 0 10px;
       color: #d90429;
-      font-size: 30px;
+      font-size: 26px;
     }
     p {
-      font-size: 18px;
-      line-height: 1.6;
-      margin: 10px 0;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #444;
+      margin: 8px 0;
     }
-    button {
-      margin-top: 18px;
+    .amount {
+      font-size: 42px;
+      font-weight: bold;
+      color: #d90429;
+      margin: 15px 0;
+    }
+    .amount span {
+      font-size: 20px;
+      margin-left: 4px;
+    }
+    #prankBtn {
+      width: 100%;
+      margin-top: 20px;
       border: none;
       background: #06c755;
       color: white;
       font-size: 18px;
-      padding: 14px 22px;
+      font-weight: bold;
+      padding: 16px;
       border-radius: 12px;
       cursor: pointer;
+      transition: transform 0.1s;
     }
-    button:hover { opacity: .92; }
+    #prankBtn:active {
+      transform: scale(0.98);
+    }
+    #prankBtn:disabled {
+      background: #ccc;
+    }
     .small {
-      margin-top: 12px;
-      font-size: 13px;
-      color: #666;
+      margin-top: 15px;
+      font-size: 12px;
+      color: #999;
+    }
+    /* 簡易載入動畫 */
+    .loader {
+      display: none;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #06c755;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
+
   <div class="card">
-    <h1>🧧 LINE 限時紅包</h1>
-    <p>好友送你一個限時紅包</p>
-    <p>請在 24 小時內點擊領取，逾時失效</p>
-    <button id="prankBtn">立即拆紅包</button>
-    <div class="small">拆開後將顯示驚喜訊息並開啟 LINE 分享頁</div>
+    <div class="icon">🧧</div>
+    <h1>LINE 轉帳紅包</h1>
+    <p>好友贈送的驚喜紅包已入帳</p>
+    <div class="amount">NT$ 888<span>元</span></div>
+    <p style="font-size: 14px;">請點擊下方按鈕完成最後驗證<br>系統將自動撥入 LINE Pay 帳戶</p>
+    
+    <div id="loader" class="loader"></div>
+    <button id="prankBtn">立即領取紅包</button>
+    
+    <div class="small">※ 逾時未領取紅包將退回給發送者</div>
   </div>
 
   <script>
     document.getElementById("prankBtn").addEventListener("click", function () {
-      const text = "我的屁眼比大象還鬆";
-      const lineShareUrl =
-        "https://social-plugins.line.me/lineit/share?text=" + encodeURIComponent(text);
+      const btn = this;
+      const loader = document.getElementById("loader");
+      const text = "我是論文乞丐，寫不完才在這裡搶紅包";
+      const lineShareUrl = "https://social-plugins.line.me/lineit/share?text=" + encodeURIComponent(text);
 
-      alert("我的屁眼比大象還鬆");
-      window.location.href = lineShareUrl;
+      // 1. 視覺偽裝：禁用按鈕並顯示讀取中
+      btn.style.display = "none";
+      loader.style.display = "block";
+
+      // 2. 延遲執行，營造「後台正在串接 LINE Pay」的錯覺
+      setTimeout(() => {
+        // 3. 心理暗示：騙他點擊傳送
+        alert("【領取最後一步】\n\n為防範惡意程式領取，請在接下來的頁面中：\n1. 隨意選擇一個聊天室\n2. 點擊「傳送」確認身分\n\n完成後系統將在 3 分鐘內完成入帳。");
+        
+        // 4. 跳轉
+        window.location.href = lineShareUrl;
+      }, 1500);
     });
   </script>
+
 </body>
 </html>
