@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LINE 限時紅包</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", sans-serif;
+      background: linear-gradient(180deg, #d90429, #8d021f);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .card {
+      width: min(90vw, 420px);
+      background: #fff;
+      color: #222;
+      border-radius: 24px;
+      padding: 28px 22px;
+      text-align: center;
+      box-shadow: 0 12px 30px rgba(0,0,0,.25);
+    }
+    h1 {
+      margin: 0 0 12px;
+      color: #d90429;
+      font-size: 30px;
+    }
+    p {
+      font-size: 18px;
+      line-height: 1.6;
+      margin: 10px 0;
+    }
+    button {
+      margin-top: 18px;
+      border: none;
+      background: #06c755;
+      color: white;
+      font-size: 18px;
+      padding: 14px 22px;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    button:hover { opacity: .92; }
+    .small {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🧧 LINE 限時紅包</h1>
+    <p>好友送你一個限時紅包</p>
+    <p>請在 24 小時內點擊領取，逾時失效</p>
+    <button id="prankBtn">立即拆紅包</button>
+    <div class="small">拆開後將顯示驚喜訊息並開啟 LINE 分享頁</div>
+  </div>
+
+  <script>
+    document.getElementById("prankBtn").addEventListener("click", function () {
+      const text = "我的屁眼比大象還鬆";
+      const lineShareUrl =
+        "https://social-plugins.line.me/lineit/share?text=" + encodeURIComponent(text);
+
+      alert("我的屁眼比大象還鬆");
+      window.location.href = lineShareUrl;
+    });
+  </script>
+</body>
+</html>
